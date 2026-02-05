@@ -12,6 +12,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
+option(TESTING_BUILD "Enable testing build" OFF)
+
 
 # Define the build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -23,6 +25,9 @@ set(CMAKE_PROJECT_NAME LegoClassifier)
 
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+set(CMAKE_MODULE_PATH cmake)
+
+set(BUSINESS_LOGIC_LIB BUSINESS_LOGIC)
 
 # Core project settings
 project(${CMAKE_PROJECT_NAME})
@@ -31,38 +36,63 @@ message("Build type: " ${CMAKE_BUILD_TYPE})
 # Enable CMake support for ASM and C languages
 enable_language(C ASM)
 
-# Create an executable object type
-add_executable(${CMAKE_PROJECT_NAME})
+#message(${CMAKE_MODULE_PATH})
+include(${CMAKE_MODULE_PATH}/CPM.cmake)
 
-# Add STM32CubeMX generated sources
-add_subdirectory(cmake/stm32cubemx)
+if(TESTING_BUILD)
+    message("Testing build")
 
-# Link directories setup
-target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined library search paths
-)
+    enable_language(CXX)
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_TOOLCHAIN_FILE "")
 
-# Add sources to executable
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
-)
+    CPMAddPackage("gh:catchorg/Catch2@3.12.0")
+    list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
+    include(CTest)
+    enable_testing()
 
-# Add include paths
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
-)
+    add_subdirectory(BusinessLogic)
+    add_subdirectory(Tests)
+else ()
+    message("Non test build")
 
-# Add project symbols (macros)
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined symbols
-)
+    # Create an executable object type
+    add_executable(${CMAKE_PROJECT_NAME})
 
-# Remove wrong libob.a library dependency when using cpp files
-list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
+    # Add STM32CubeMX generated sources
+    add_subdirectory(cmake/stm32cubemx)
+    add_subdirectory(Platform)
+    add_subdirectory(BusinessLogic)
+    add_subdirectory(App)
 
-# Add linked libraries
-target_link_libraries(${CMAKE_PROJECT_NAME}
-    stm32cubemx
+    # Link directories setup
+    target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
+            # Add user defined library search paths
+    )
 
-    # Add user defined libraries
-)
+    # Add sources to executable
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+            # Add user sources here
+    )
+
+    # Add include paths
+    target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+            # Add user defined include paths
+    )
+
+    # Add project symbols (macros)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+            # Add user defined symbols
+    )
+
+    # Remove wrong libob.a library dependency when using cpp files
+    list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
+
+    # Add linked libraries
+    target_link_libraries(${CMAKE_PROJECT_NAME}
+            stm32cubemx
+
+            # Add user defined libraries
+    )
+endif ()
