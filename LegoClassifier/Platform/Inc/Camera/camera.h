@@ -1,0 +1,6 @@
+#ifndef LEGOCLASSIFIER_CAMERA_H
+#define LEGOCLASSIFIER_CAMERA_H
+
+int test_one();
+
+#endif //LEGOCLASSIFIER_CAMERA_H
