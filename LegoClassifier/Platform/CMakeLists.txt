@@ -16,8 +16,8 @@ set(OV2640_HEADERS_DIRS
         Camera/OV2640
 )
 set(OV2640_SRCS
-        Camera/OV2640/ov2640.c
-        Camera/OV2640/ov2640_regs.c
+        Camera/OV2640/ov2640.cpp
+        Camera/OV2640/ov2640_regs.cpp
 )
 
 # Board WeActStudioMiniSTM
@@ -28,6 +28,9 @@ set(WeActStudioMiniSTM_SRCS
         STM32/WeActStudioMiniSTM/weact_mini_stm.cpp
 )
 
+set(MCU_HEADERS_DIRS
+        STM32/STM32H723VGT6
+)
 set(MCU_SRCS
         STM32/STM32H723VGT6/stm32.cpp
 )
@@ -48,6 +51,7 @@ target_include_directories(${PLATFORM_LIB} PUBLIC ${INC_DIRECTORIES})
 target_include_directories(${PLATFORM_LIB} PRIVATE
                            ${OV2640_HEADERS_DIRS}
                            ${WeActStudioMiniSTM_HEADERS_DIRS}
+                           ${MCU_HEADERS_DIRS}
 )
 
 target_include_directories(${PLATFORM_LIB} PRIVATE )

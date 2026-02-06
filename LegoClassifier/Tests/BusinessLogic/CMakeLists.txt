@@ -4,8 +4,6 @@ set(TESTS_SRCS
        dummy_test.cpp
 )
 
-include(Catch)
-
 add_executable(${BUSINESS_LOGIC_TESTS_NAME} ${TESTS_SRCS})
 
 target_link_libraries(${BUSINESS_LOGIC_TESTS_NAME} PUBLIC

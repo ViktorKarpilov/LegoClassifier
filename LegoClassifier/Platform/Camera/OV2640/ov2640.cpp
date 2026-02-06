@@ -494,10 +494,10 @@ static int set_night_mode(int enable)
 }
 
 //===============================
-int ov2640_init(framesize_t framesize)
+int ov2640_init()
 {
 	reset();
-	hcamera.framesize = framesize;
+	hcamera.framesize = FRAMESIZE_QQVGA;
 	hcamera.pixformat = PIXFORMAT_RGB565;
 	//set_framesize(FRAMESIZE_QQVGA);
 	set_pixformat(hcamera.pixformat);

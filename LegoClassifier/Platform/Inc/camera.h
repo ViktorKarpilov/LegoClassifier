@@ -6,6 +6,10 @@
 // #include "stm32h7xx_hal_i2c.h"
 #include <stm32h7xx_hal.h>
 
+#define Camera_OK 0
+#define camera_ERROR 1
+#define Camera_delay HAL_Delay
+
 struct regval_t{
 	uint8_t reg_addr;
 	uint8_t value;
@@ -69,8 +73,11 @@ typedef struct {
 	pixformat_t pixformat;
 } Camera_HandleTypeDef;
 
-extern Camera_HandleTypeDef hcamera;;
+extern Camera_HandleTypeDef hcamera;
 extern const uint16_t dvp_cam_resolution[][2];
+
+inline uint32_t Camera_FPS{0};
+volatile inline  uint32_t DCMI_FrameIsReady{0};
 
 int32_t Camera_WriteReg(Camera_HandleTypeDef *hov, uint8_t regAddr, const uint8_t *pData);
 int32_t Camera_ReadReg(Camera_HandleTypeDef *hov, uint8_t regAddr, uint8_t *pData);
@@ -80,7 +87,7 @@ int32_t Camera_WriteRegList(Camera_HandleTypeDef *hov, const struct regval_t *re
 int32_t Camera_read_id(Camera_HandleTypeDef *hov);
 void Camera_Reset(Camera_HandleTypeDef *hov);
 void Camera_XCLK_Set(uint8_t xclktype);
-void Camera_Init_Device(I2C_HandleTypeDef *hi2c, framesize_t framesize);
+void Camera_Init_Device(framesize_t framesize);
 
 void camera_init(void);
 
