@@ -1,0 +1,6 @@
+#ifndef LEGOCLASSIFIER_STM32_H
+#define LEGOCLASSIFIER_STM32_H
+
+void mcu_init(void);
+
+#endif //LEGOCLASSIFIER_STM32_H

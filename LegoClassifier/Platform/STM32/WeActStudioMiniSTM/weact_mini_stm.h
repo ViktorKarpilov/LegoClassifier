@@ -1,0 +1,9 @@
+#ifndef LEGOCLASSIFIER_WEACT_MINI_STM_H
+#define LEGOCLASSIFIER_WEACT_MINI_STM_H
+
+#define LED_Pin GPIO_PIN_3
+#define LED_GPIO_Port GPIOE
+
+void board_init();
+
+#endif //LEGOCLASSIFIER_WEACT_MINI_STM_H

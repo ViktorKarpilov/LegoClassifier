@@ -12,8 +12,9 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+option(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(TESTING_BUILD "Enable testing build" OFF)
-
 
 # Define the build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -92,7 +93,7 @@ else ()
     # Add linked libraries
     target_link_libraries(${CMAKE_PROJECT_NAME}
             stm32cubemx
-
+            ${APP_LIB}
             # Add user defined libraries
     )
 endif ()

@@ -1,0 +1,10 @@
+#ifndef OV2640_H
+#define OV2640_H
+
+#include "main.h"
+#include "../../Inc/camera.h"
+
+
+int ov2640_init(framesize_t framesize);
+
+#endif
