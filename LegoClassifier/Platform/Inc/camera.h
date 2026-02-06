@@ -1,6 +1,6 @@
 #ifndef LEGOCLASSIFIER_CAMERA_H
 #define LEGOCLASSIFIER_CAMERA_H
 
-int test_one();
+void camera_init(void);
 
 #endif //LEGOCLASSIFIER_CAMERA_H

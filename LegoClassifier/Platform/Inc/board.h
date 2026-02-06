@@ -1,0 +1,6 @@
+#ifndef LEGOCLASSIFIER_BOARD_H
+#define LEGOCLASSIFIER_BOARD_H
+
+void board_init(void);
+
+#endif //LEGOCLASSIFIER_BOARD_H

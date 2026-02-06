@@ -1,4 +1,4 @@
-#include <camera.h>
+#include <../Inc/camera.h>
 
 int test_two()
 {
