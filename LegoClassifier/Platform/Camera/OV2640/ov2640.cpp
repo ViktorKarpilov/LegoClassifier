@@ -1,5 +1,6 @@
 #include "ov2640.h"
 #include "ov2640_regs.h"
+#include "stm32h7xx_hal.h"
 
 #define OV2640_XCLK_FREQUENCY       (20000000)
 #define OV2640_NUM_ALLOWED_SIZES    (19)
@@ -493,10 +494,10 @@ static int set_night_mode(int enable)
 }
 
 //===============================
-int ov2640_init(framesize_t framesize)
+int ov2640_init()
 {
 	reset();
-	hcamera.framesize = framesize;
+	hcamera.framesize = FRAMESIZE_QQVGA;
 	hcamera.pixformat = PIXFORMAT_RGB565;
 	//set_framesize(FRAMESIZE_QQVGA);
 	set_pixformat(hcamera.pixformat);

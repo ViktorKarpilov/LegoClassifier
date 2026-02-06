@@ -1,6 +1,13 @@
-#ifndef LEGOCLASSIFIER_STM32_H
-#define LEGOCLASSIFIER_STM32_H
+#ifndef LEGOCLASSIFIER_MCU_H
+#define LEGOCLASSIFIER_MCU_H
 
-void mcu_init(void);
+class MCU
+{
+public:
+    MCU();
 
-#endif //LEGOCLASSIFIER_STM32_H
+private:
+
+};
+
+#endif //LEGOCLASSIFIER_MCU_H

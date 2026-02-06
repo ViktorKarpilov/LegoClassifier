@@ -1,10 +1,14 @@
 #ifndef OV2640_H
 #define OV2640_H
 
-#include "main.h"
 #include "../../Inc/camera.h"
 
+#define CAMERA_I2C_ADDRESS 0x60
+#define CAMERA_FRAME_SIZE FRAMESIZE_QQVGA
 
-int ov2640_init(framesize_t framesize);
+#define FrameWidth 160
+#define FrameHeight 120
+
+int ov2640_init();
 
 #endif
