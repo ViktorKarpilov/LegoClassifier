@@ -5,11 +5,11 @@ set(INC_DIRECTORIES
         Inc
 )
 
-set(DRIVERS_DIRS
-        ${PROJECT_SOURCE_DIR}/Drivers/STM32H7xx_HAL_Driver/Inc
-        ${PROJECT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32H7xx/Include
-        ${PROJECT_SOURCE_DIR}/Drivers/CMSIS/Include
-)
+#set(DRIVERS_DIRS
+#        ${PROJECT_SOURCE_DIR}/Drivers/STM32H7xx_HAL_Driver/Inc
+#        ${PROJECT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32H7xx/Include
+#        ${PROJECT_SOURCE_DIR}/Drivers/CMSIS/Include
+#)
 
 # Camera OV2640
 set(OV2640_HEADERS_DIRS
@@ -45,8 +45,11 @@ add_library(${PLATFORM_LIB}
 
 target_include_directories(${PLATFORM_LIB} PUBLIC ${INC_DIRECTORIES})
 
-message(${DRIVERS_DIRS})
-target_include_directories(${PLATFORM_LIB} PRIVATE ${DRIVERS_DIRS})
+target_include_directories(${PLATFORM_LIB} PRIVATE
+                           ${OV2640_HEADERS_DIRS}
+                           ${WeActStudioMiniSTM_HEADERS_DIRS}
+)
 
-target_include_directories(${PLATFORM_LIB} PRIVATE ${OV2640_HEADERS_DIRS})
-target_include_directories(${PLATFORM_LIB} PRIVATE ${WeActStudioMiniSTM_HEADERS_DIRS})
+target_include_directories(${PLATFORM_LIB} PRIVATE )
+
+target_link_libraries(${PLATFORM_LIB} PRIVATE stm32cubemx)

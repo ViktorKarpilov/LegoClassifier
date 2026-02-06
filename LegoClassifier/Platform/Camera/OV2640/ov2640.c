@@ -1,5 +1,6 @@
 #include "ov2640.h"
 #include "ov2640_regs.h"
+#include "stm32h7xx_hal.h"
 
 #define OV2640_XCLK_FREQUENCY       (20000000)
 #define OV2640_NUM_ALLOWED_SIZES    (19)
