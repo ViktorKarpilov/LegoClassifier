@@ -24,5 +24,5 @@ void initiate_board_led(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
 
 void board_init()
 {
-    initiate_board_led(BLUE_LED_GPIO_Port, BLUE_LED_Pin);
+    // initiate_board_led(BLUE_LED_GPIO_Port, BLUE_LED_Pin);
 }

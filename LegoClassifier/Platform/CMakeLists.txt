@@ -11,6 +11,17 @@ set(INC_DIRECTORIES
 #        ${PROJECT_SOURCE_DIR}/Drivers/CMSIS/Include
 #)
 
+# ST7735 LCD
+set(ST7735_HEADERS_DIRS
+        Display/ST7735
+)
+set(ST7735_SRCS
+        Display/ST7735/logo_128_160.c
+        Display/ST7735/logo_160_80.c
+        Display/ST7735/st7735.c
+        Display/ST7735/st7735_reg.c
+)
+
 # Camera OV2640
 set(OV2640_HEADERS_DIRS
         Camera/OV2640
@@ -31,19 +42,27 @@ set(WeActStudioMiniSTM_SRCS
 set(MCU_HEADERS_DIRS
         STM32/STM32H723VGT6
 )
+
 set(MCU_SRCS
         STM32/STM32H723VGT6/stm32.cpp
 )
-
 set(CAMERA_SRCS
         Camera/camera.cpp
+)
+set(DISPLAY_SRCS
+        Display/lcd.cpp
+)
+set(DISPLAY_DIRS
+        Display
 )
 
 add_library(${PLATFORM_LIB}
             ${WeActStudioMiniSTM_SRCS}
             ${OV2640_SRCS}
             ${CAMERA_SRCS}
+            ${ST7735_SRCS}
             ${MCU_SRCS}
+            ${DISPLAY_SRCS}
 )
 
 target_include_directories(${PLATFORM_LIB} PUBLIC ${INC_DIRECTORIES})
@@ -52,6 +71,8 @@ target_include_directories(${PLATFORM_LIB} PRIVATE
                            ${OV2640_HEADERS_DIRS}
                            ${WeActStudioMiniSTM_HEADERS_DIRS}
                            ${MCU_HEADERS_DIRS}
+                           ${ST7735_HEADERS_DIRS}
+                           ${DISPLAY_DIRS}
 )
 
 target_include_directories(${PLATFORM_LIB} PRIVATE )
