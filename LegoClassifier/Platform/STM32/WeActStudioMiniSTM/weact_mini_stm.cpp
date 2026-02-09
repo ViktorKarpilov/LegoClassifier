@@ -1,7 +1,8 @@
 #include <weact_mini_stm.h>
 #include <stm32h723xx.h>
-#include <stm32h7xx_hal_rcc.h>
-#include <stm32h7xx_hal_gpio.h>
+#include <stm32h7xx_hal.h>
+
+#include "main.h"
 
 void initiate_board_led(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
 {
@@ -23,5 +24,5 @@ void initiate_board_led(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
 
 void board_init()
 {
-    initiate_board_led(LED_GPIO_Port, LED_Pin);
+    // initiate_board_led(BLUE_LED_GPIO_Port, BLUE_LED_Pin);
 }
