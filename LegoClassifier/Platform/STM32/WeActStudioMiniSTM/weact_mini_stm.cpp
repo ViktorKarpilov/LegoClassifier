@@ -1,8 +1,8 @@
 #include <weact_mini_stm.h>
-#include <stm32h723xx.h>
 #include <stm32h7xx_hal.h>
 
 #include "main.h"
+#include "mcu.h"
 
 void initiate_board_led(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
 {
@@ -24,5 +24,19 @@ void initiate_board_led(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
 
 void board_init()
 {
-    // initiate_board_led(BLUE_LED_GPIO_Port, BLUE_LED_Pin);
+    initiate_board_led(BLUE_LED_GPIO_Port, BLUE_LED_Pin);
+}
+
+void toggle_board_led()
+{
+    HAL_GPIO_TogglePin(BLUE_LED_GPIO_Port, BLUE_LED_Pin);
+}
+
+void blink_board_led()
+{
+    for (int i =0; i < 40; i++)
+    {
+        HAL_GPIO_TogglePin(BLUE_LED_GPIO_Port, BLUE_LED_Pin);
+        MCU::delay(100);
+    }
 }

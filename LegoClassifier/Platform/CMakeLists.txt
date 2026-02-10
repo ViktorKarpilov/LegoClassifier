@@ -25,6 +25,7 @@ set(ST7735_SRCS
 # Camera OV2640
 set(OV2640_HEADERS_DIRS
         Camera/OV2640
+        Camera
 )
 set(OV2640_SRCS
         Camera/OV2640/ov2640.cpp

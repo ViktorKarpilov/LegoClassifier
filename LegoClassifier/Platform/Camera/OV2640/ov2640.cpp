@@ -1,4 +1,6 @@
 #include "ov2640.h"
+
+#include "camera_def.h"
 #include "ov2640_regs.h"
 #include "stm32h7xx_hal.h"
 
