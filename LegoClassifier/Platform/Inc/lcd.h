@@ -3,6 +3,7 @@
 
 #define TFT96 1
 #include <sys/_stdint.h>
+#include <mcu.h>
 
 #define WHITE         	 0xFFFF
 #define BLACK         	 0x0000
@@ -32,6 +33,6 @@ void LCD_Light(uint32_t Brightness_Dis,uint32_t time);
 void LCD_ShowChar(uint16_t x,uint16_t y,uint8_t num,uint8_t size,uint8_t mode);
 void LCD_ShowString(uint16_t x,uint16_t y,uint16_t width,uint16_t height,uint8_t size,uint8_t *p);
 
-void display_camera_frame(void);
+void display_camera_frame(const std::weak_ptr<MCU>& mcu_reference);
 
 #endif //LEGOCLASSIFIER_LCD_H

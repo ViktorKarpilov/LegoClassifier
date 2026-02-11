@@ -7,8 +7,8 @@
 
 void app_initiation()
 {
-    application = std::make_unique<App>();
     camera_init();
+    application = std::make_unique<App>();
 }
 
 void app_loop()
@@ -27,7 +27,7 @@ App::App()
 void App::app_loop() const
 {
     toggle_board_led();
-    display_camera_frame();
-    MCU::delay(1000);
+    display_camera_frame(processor);
+    MCU::delay(500);
     MCU::kick_dog();
 }

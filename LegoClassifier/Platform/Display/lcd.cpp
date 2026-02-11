@@ -316,8 +316,30 @@ static int32_t lcd_recvdata(uint8_t* pdata,uint32_t length)
 	return result;
 }
 
-void display_camera_frame(void)
+void display_camera_frame(const std::weak_ptr<MCU>& mcu_reference)
 {
-	ST7735_FillRGBRect(&st7735_pObj, 0, 0, reinterpret_cast<uint8_t*>(&(STM32H723VGT6::cameraFrame).get()[20][0]),
-	                   ST7735Ctx.Width, 80);
+	const auto mcu = mcu_reference.lock();
+
+	if (mcu == nullptr)
+	{
+			for (int i = 0; i < 20; i++)
+			{
+				toggle_ERR_led();
+				MCU::delay(100);
+			}
+			return;
+	}
+
+#if TFT96
+	auto st7735_frame = mcu->create_image_frame(20);
+#else
+	for (int i = 0; i < 20; i++)
+	{
+		toggle_WARN_led();
+		MCU::delay(100);
+	}
+	return;
+#endif
+
+	ST7735_FillRGBRect(&st7735_pObj, 0, 0, (uint8_t*)&pic[20][0], ST7735Ctx.Width, 80);
 }

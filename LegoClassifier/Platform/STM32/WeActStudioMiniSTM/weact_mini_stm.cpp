@@ -40,3 +40,18 @@ void blink_board_led()
         MCU::delay(100);
     }
 }
+
+void toggle_WARN_led()
+{
+    HAL_GPIO_TogglePin(WARN_LED_GPIO_Port, WARN_LED_Pin);
+}
+
+void toggle_INFO_led()
+{
+    HAL_GPIO_TogglePin(INFO_LED_GPIO_Port, INFO_LED_Pin);
+}
+
+void toggle_ERR_led()
+{
+    HAL_GPIO_TogglePin(ERR_LED_GPIO_Port, ERR_LED_Pin);
+}

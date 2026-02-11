@@ -9,7 +9,7 @@ class App
         App();
         void app_loop() const;
     private:
-        std::unique_ptr<MCU> processor = nullptr;
+        std::shared_ptr<MCU> processor = nullptr;
 };
 
 inline std::unique_ptr<App> application = nullptr;
