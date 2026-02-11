@@ -8,11 +8,16 @@
 
 #define HANDLE_I2C_1 hi2c1
 
-class STM32H723VGT6 : MCU
+typedef std::shared_ptr<std::array<std::array<uint16_t, FrameHeight>, FrameWidth>> CameraFramePointer;
+
+
+class STM32H723VGT6 : public MCU
 {
-    std::unique_ptr<std::array<std::array<uint16_t, FrameHeight>, FrameWidth>> cameraFrame {};
+    CameraFramePointer cameraFrame = std::make_shared<std::array<std::array<uint16_t, FrameHeight>, FrameWidth>>();
 public:
     STM32H723VGT6();
+
+    ImageFrame create_image_frame(int16_t offset) final;
 private:
     void start_dcmi();
 };

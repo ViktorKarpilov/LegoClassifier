@@ -1,15 +1,12 @@
-#include <../Inc/camera.h>
+#include <camera.h>
+#include <i2c.h>
+#include <ov2640.h>
+#include <stm32.h>
 
-#include "i2c.h"
-#include "ov2640.h"
-#include "../STM32/STM32H723VGT6/stm32.h"
-
-int test_two()
-{
-    return 1;
-}
+#include <camera_def.h>
 
 Camera_HandleTypeDef hcamera;
+
 // Resolution table
 //----------------------------------------
 const uint16_t dvp_cam_resolution[][2] = {
@@ -150,7 +147,7 @@ void Camera_Reset(Camera_HandleTypeDef *hov)
 	HAL_Delay(100);
 }
 
-void Camera_Init_Device()
+void camera_init()
 {
 	hcamera.hi2c = &HANDLE_I2C_1;
 	hcamera.addr = CAMERA_I2C_ADDRESS;

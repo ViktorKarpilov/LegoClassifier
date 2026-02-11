@@ -67,6 +67,12 @@ void Error_Handler(void);
 #define LCD_CS_GPIO_Port GPIOE
 #define LCD_WR_RS_Pin GPIO_PIN_13
 #define LCD_WR_RS_GPIO_Port GPIOE
+#define INFO_LED_Pin GPIO_PIN_13
+#define INFO_LED_GPIO_Port GPIOB
+#define WARN_LED_Pin GPIO_PIN_15
+#define WARN_LED_GPIO_Port GPIOB
+#define ERR_LED_Pin GPIO_PIN_9
+#define ERR_LED_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
 

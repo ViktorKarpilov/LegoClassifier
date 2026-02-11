@@ -1,15 +1,17 @@
 #ifndef LEGOCLASSIFIER_APP_H
 #define LEGOCLASSIFIER_APP_H
+#include "mcu.h"
+#include "memory"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+class App
+{
+    public:
+        App();
+        void app_loop() const;
+    private:
+        std::shared_ptr<MCU> processor = nullptr;
+};
 
-void app_initiation();
-void app_loop();
-
-#ifdef __cplusplus
-}
-#endif
+inline std::unique_ptr<App> application = nullptr;
 
 #endif //LEGOCLASSIFIER_APP_H

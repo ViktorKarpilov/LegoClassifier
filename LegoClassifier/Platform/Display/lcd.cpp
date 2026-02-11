@@ -1,10 +1,14 @@
 #include "lcd.h"
+
+#include "board.h"
 #include "font.h"
+#include "mcu.h"
 #include "spi.h"
 #include "st7735.h"
 #include "st7735_bsp.h"
 #include "tim.h"
 #include "stdio.h"
+#include "stm32.h"
 
 
 //LCD_RST
@@ -59,8 +63,6 @@ void LCD_Test(void)
 
 	#endif
 
-	printf("Test");
-
 	ST7735_RegisterBusIO(&st7735_pObj,&st7735_pIO);
 	ST7735_LCD_Driver.Init(&st7735_pObj,ST7735_FORMAT_RBG565,&ST7735Ctx);
 	ST7735_LCD_Driver.ReadID(&st7735_pObj,&st7735_id);
@@ -72,7 +74,7 @@ void LCD_Test(void)
 	ST7735_LCD_Driver.DrawBitmap(&st7735_pObj,0,0,WeActStudiologo_160_80);
 	#endif
 
-	LCD_Light(0, 300);
+	LCD_Light(50, 3000);
 
 	ST7735_LCD_Driver.FillRect(&st7735_pObj, 0, 0, ST7735Ctx.Width,ST7735Ctx.Height, BLACK);
 
@@ -314,3 +316,30 @@ static int32_t lcd_recvdata(uint8_t* pdata,uint32_t length)
 	return result;
 }
 
+void display_camera_frame(const std::weak_ptr<MCU>& mcu_reference)
+{
+	const auto mcu = mcu_reference.lock();
+
+	if (mcu == nullptr)
+	{
+			for (int i = 0; i < 20; i++)
+			{
+				toggle_ERR_led();
+				MCU::delay(100);
+			}
+			return;
+	}
+
+#if TFT96
+	auto st7735_frame = mcu->create_image_frame(20);
+#else
+	for (int i = 0; i < 20; i++)
+	{
+		toggle_WARN_led();
+		MCU::delay(100);
+	}
+	return;
+#endif
+
+	ST7735_FillRGBRect(&st7735_pObj, 0, 0, (uint8_t*)&pic[20][0], ST7735Ctx.Width, 80);
+}
