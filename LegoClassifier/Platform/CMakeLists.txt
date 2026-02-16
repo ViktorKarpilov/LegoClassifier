@@ -57,6 +57,11 @@ set(DISPLAY_DIRS
         Display
 )
 
+# Logger
+set(LOGGER_SRCS
+        STM32/STM32H723VGT6/logger.cpp
+)
+
 add_library(${PLATFORM_LIB}
             ${WeActStudioMiniSTM_SRCS}
             ${OV2640_SRCS}
@@ -64,6 +69,7 @@ add_library(${PLATFORM_LIB}
             ${ST7735_SRCS}
             ${MCU_SRCS}
             ${DISPLAY_SRCS}
+            ${LOGGER_SRCS}
 )
 
 target_include_directories(${PLATFORM_LIB} PUBLIC ${INC_DIRECTORIES})
