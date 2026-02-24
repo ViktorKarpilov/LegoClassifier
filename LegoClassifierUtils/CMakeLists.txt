@@ -17,7 +17,20 @@ FetchContent_Declare(
         GIT_TAG v3.0.2
         GIT_SHALLOW TRUE
 )
+#FetchContent_Declare(
+#        OpenCV
+#        GIT_REPOSITORY https://github.com/opencv/opencv.git
+#        GIT_TAG 4.13.0
+#        GIT_SHALLOW TRUE
+#)
 
 FetchContent_MakeAvailable(Catch2 pybind11)
 
-add_library(LegoClassifierUtils SHARED library.cpp)
+find_package(OpenCV REQUIRED)
+
+option(ENABLE_TESTING "Guess what ? For testing !" OFF)
+message(${ENABLE_TESTING})
+
+add_subdirectory(LegoContours)
+
+#add_library(LegoClassifierUtils SHARED library.cpp)
