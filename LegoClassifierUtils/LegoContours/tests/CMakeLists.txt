@@ -7,6 +7,8 @@ if(ENABLE_TESTING)
     include(Catch)
 
     set(TESTS_FILES
+            contours.cpp
+            studs.cpp
             main.cpp)
 
     add_executable(TESTS ${TESTS_FILES})

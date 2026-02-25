@@ -1,47 +1,34 @@
 #include <lego_contours.hpp>
+#include <lego_features.hpp>
+#include <opencv2/highgui.hpp>
 #include "catch2/catch_test_macros.hpp"
-TEST_CASE("Contour created from file", "[contour]")
+
+TEST_CASE("Overlay image shows contours and studs", "[visual]")
 {
-    const auto contour = contours::lego_contour("./static/image.jpg");
+    const auto contour = contours::lego_contour("./static/two_by_four_with_holes.jpg");
     REQUIRE(contour.has_value());
+
+    const auto overlay = contour.build_overlay_image();
+    REQUIRE(!overlay.empty());
+
+    const string window_name = "Contour + Studs Overlay";
+    imshow(window_name, overlay);
+    moveWindow(window_name, 100, 100);
+    waitKey(0);
 }
 
-TEST_CASE("Contour created is contour", "[contour]")
+TEST_CASE("Lego features should be correct", "[features]")
 {
-    const auto contour = contours::lego_contour("./static/image.jpg");
-    REQUIRE(contour.build_contours_image().rows != 0);
-}
+    const auto features = features::extract_features("./static/two_by_four_with_holes.jpg");
 
-TEST_CASE("Contour area decrease after smoothing", "[contour]")
-{
-    auto contour = contours::lego_contour("./static/image.jpg");
-    REQUIRE(contour.has_value());
-    const auto primal_area = contour.calculate_contour_parameters();
-    contour.approximate_contour_area(30);
-    const auto secondary_area = contour.calculate_contour_parameters();
-    REQUIRE(secondary_area.area < primal_area.area);
-    REQUIRE(secondary_area.area > 0);
-    REQUIRE(primal_area.area > 0);
-}
+    REQUIRE(features.circles == 8);
 
-TEST_CASE("Perimeter decrease after smoothing", "[contour]")
-{
-    auto contour = contours::lego_contour("./static/image.jpg");
-    REQUIRE(contour.has_value());
-    const auto primal_area = contour.calculate_contour_parameters();
-    contour.approximate_contour_area(30);
-    const auto secondary_area = contour.calculate_contour_parameters();
-    REQUIRE(secondary_area.perimeter < primal_area.perimeter);
-    REQUIRE(secondary_area.perimeter > 0);
-    REQUIRE(primal_area.perimeter > 0);
-}
+    REQUIRE(features.area > 264000);
+    REQUIRE(features.area < 300000);
 
-TEST_CASE("Aspect ration calculates", "[contour]")
-{
-    const auto contour = contours::lego_contour("./static/image.jpg");
-    REQUIRE(contour.has_value());
-    const auto aspect = contour.calculate_contour_parameters();
+    REQUIRE(features.perimeter > 2000);
+    REQUIRE(features.perimeter < 2500);
 
-    REQUIRE(aspect.aspect_ration > 0);
-    REQUIRE(aspect.aspect_ration < 1);
+    REQUIRE(features.aspect_ratio < 0.6);
+    REQUIRE(features.aspect_ratio > 0.4);
 }

@@ -23,6 +23,8 @@ namespace contours
         [[nodiscard]] Mat build_contours_image(double epsilon = 3) const;
         Mat draw_contour(int index) const;
         [[nodiscard]] contour_parameters calculate_contour_parameters() const;
+        [[nodiscard]] int get_circle_count() const;
+        [[nodiscard]] Mat build_overlay_image() const;
 
         /**
          * WARNING! Not const - it's going to change contours !
@@ -31,7 +33,9 @@ namespace contours
 
     private:
         vector<vector<Point>> contours_;
+        vector<Vec3f> circles_;
         vector<Vec4i> hierarchy_;
+        Mat image_;
         int32_t height_;
         int32_t width_;
     };
