@@ -31,8 +31,6 @@ void App::app_loop() const
 {
     toggle_board_led();
     display_camera_frame(processor);
-    logger->log_info("Test log message\n");
-
-    MCU::delay(500);
+    // logger->log_info("Test log message\n");
     MCU::kick_dog();
 }
