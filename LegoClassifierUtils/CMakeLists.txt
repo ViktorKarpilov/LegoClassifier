@@ -29,7 +29,9 @@ FetchContent_MakeAvailable(Catch2 pybind11)
 find_package(OpenCV REQUIRED)
 
 option(ENABLE_TESTING "Guess what ? For testing !" OFF)
-message(${ENABLE_TESTING})
+option(ENABLE_PYTHON_BINDINGS "Build Python bindings with pybind11" ON)
+message(STATUS "Testing: ${ENABLE_TESTING}")
+message(STATUS "Python bindings: ${ENABLE_PYTHON_BINDINGS}")
 
 add_subdirectory(LegoContours)
 

@@ -1,3 +1,8 @@
 /LegoClassifier/build/
 LegoClassifier/.idea
 LegoClassifier/.idea/debugServers
+Images/PartsOriginal.zip
+LegoClassifierUI/ui/__pycache__
+.claude
+LegoClassifierUI/.idea
+LegoClassifierUtils/.idea
