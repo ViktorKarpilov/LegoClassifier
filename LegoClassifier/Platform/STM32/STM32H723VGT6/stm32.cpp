@@ -48,7 +48,7 @@ void HAL_DCMI_FrameEventCallback(DCMI_HandleTypeDef *hdcmi)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_pin)
 {
-    if (GPIO_pin == PIC_BUTTON_Pin)
+    if (GPIO_pin == PIC_BUTTON_Pin || GPIO_pin == K1_BUTTON_Pin)
     {
         platform_queue.push(send_image);
     }

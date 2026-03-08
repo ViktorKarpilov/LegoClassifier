@@ -10,10 +10,11 @@ struct actions_queue
 {
     static constexpr uint8_t capacity = 8;
 
-    uint8_t head = 0;
-    uint8_t tail = 0;
+    volatile uint8_t head = 0;
+    volatile uint8_t tail = 0;
 
-    std::array<actions, capacity> data{};
+    volatile actions data[capacity]{};
+    // std::array<volatile actions, capacity> data{};
 
     bool push(const actions action)
     {
@@ -31,8 +32,8 @@ struct actions_queue
     {
         if (head == tail) return false;
 
-        tail = (tail + 1) % capacity;
         out = data[tail];
+        tail = (tail + 1) % capacity;
         return true;
     }
 };
