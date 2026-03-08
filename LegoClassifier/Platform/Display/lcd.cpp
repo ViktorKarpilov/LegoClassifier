@@ -341,5 +341,5 @@ void display_camera_frame(const std::weak_ptr<MCU>& mcu_reference)
 	return;
 #endif
 
-	ST7735_FillRGBRect(&st7735_pObj, 0, 0, (uint8_t*)&pic[20][0], ST7735Ctx.Width, 80);
+	ST7735_FillRGBRect(&st7735_pObj, 0, 0, reinterpret_cast<uint8_t*>(st7735_frame.frame_pointer), ST7735Ctx.Width, 80);
 }

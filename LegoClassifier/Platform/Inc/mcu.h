@@ -2,12 +2,14 @@
 #define LEGOCLASSIFIER_MCU_H
 
 #include <memory>
+#include <camera.h>
 
-extern uint16_t pic[120][160];
+// extern uint16_t pic[120][160];
+extern std::array<std::array<uint16_t, FrameWidth>, FrameHeight> cameraFrame; // NOLINT(*-dynamic-static-initializers)
 
 struct ImageFrame
 {
-    std::shared_ptr<uint8_t> frame_pointer;
+    uint16_t* frame_pointer;
     uint16_t width;
     uint16_t height;
 };

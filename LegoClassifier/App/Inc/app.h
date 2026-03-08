@@ -2,6 +2,7 @@
 #define LEGOCLASSIFIER_APP_H
 #include "mcu.h"
 #include "memory"
+#include "USB.h"
 
 class Logger;
 
@@ -13,6 +14,7 @@ class App
     private:
         std::shared_ptr<MCU> processor = nullptr;
         std::shared_ptr<Logger> logger = nullptr;
+        std::shared_ptr<usb::USB> usb = nullptr;
 };
 
 inline std::unique_ptr<App> application = nullptr;

@@ -26,6 +26,7 @@
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -106,6 +107,7 @@ int main(void)
   MX_IWDG1_Init();
   MX_RTC_Init();
   MX_UART4_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   app_initiation();
   /* USER CODE END 2 */
@@ -228,6 +230,8 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+    HAL_GPIO_TogglePin(ERR_LED_GPIO_Port, ERR_LED_Pin);
+    HAL_Delay(200);
   }
   /* USER CODE END Error_Handler_Debug */
 }
