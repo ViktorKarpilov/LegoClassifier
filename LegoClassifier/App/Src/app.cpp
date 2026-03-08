@@ -34,7 +34,7 @@ App::App()
 
 void App::app_loop() const
 {
-    if (actions action = idle; platform_queue.pop(action))
+    if (action action = idle; platform_queue.pop(action))
     {
         // ReSharper disable once CppDFAConstantConditions - condition set in isr
         if (action == send_image)

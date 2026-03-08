@@ -30,7 +30,6 @@ class UsbConnection:
         if self.serial.is_open:
             self.serial.close()
 
-
     def read(self):
         test = self.serial.read(1000)
         print(test)

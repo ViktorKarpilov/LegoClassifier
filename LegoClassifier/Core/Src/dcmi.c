@@ -146,7 +146,7 @@ void HAL_DCMI_MspInit(DCMI_HandleTypeDef* dcmiHandle)
     __HAL_LINKDMA(dcmiHandle,DMA_Handle,hdma_dcmi);
 
     /* DCMI interrupt Init */
-    HAL_NVIC_SetPriority(DCMI_PSSI_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(DCMI_PSSI_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(DCMI_PSSI_IRQn);
   /* USER CODE BEGIN DCMI_MspInit 1 */
 

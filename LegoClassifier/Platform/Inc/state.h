@@ -1,6 +1,6 @@
 #pragma once
 
-enum actions
+enum action
 {
     idle,
     send_image,
@@ -13,10 +13,10 @@ struct actions_queue
     volatile uint8_t head = 0;
     volatile uint8_t tail = 0;
 
-    volatile actions data[capacity]{};
+    volatile action data[capacity]{};
     // std::array<volatile actions, capacity> data{};
 
-    bool push(const actions action)
+    bool push(const action action)
     {
         if ((head + 1) % capacity == tail % capacity)
         {
@@ -28,7 +28,7 @@ struct actions_queue
         return true;
     }
 
-    bool pop(actions &out)
+    bool pop(action &out)
     {
         if (head == tail) return false;
 
