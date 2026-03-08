@@ -57,6 +57,15 @@ set(DISPLAY_DIRS
         Display
 )
 
+set(USB_SRCS
+        Usb/usb.cpp
+#        Usb/usb_descriptor.cpp
+#        Usb/usb_handlers.cpp
+)
+set(USB_DIRS
+        Usb
+)
+
 # Logger
 set(LOGGER_SRCS
         STM32/STM32H723VGT6/logger.cpp
@@ -70,6 +79,7 @@ add_library(${PLATFORM_LIB}
             ${MCU_SRCS}
             ${DISPLAY_SRCS}
             ${LOGGER_SRCS}
+            ${USB_SRCS}
 )
 
 target_include_directories(${PLATFORM_LIB} PUBLIC ${INC_DIRECTORIES})
@@ -80,6 +90,7 @@ target_include_directories(${PLATFORM_LIB} PRIVATE
                            ${MCU_HEADERS_DIRS}
                            ${ST7735_HEADERS_DIRS}
                            ${DISPLAY_DIRS}
+                           ${USB_DIRS}
 )
 
 target_include_directories(${PLATFORM_LIB} PRIVATE )

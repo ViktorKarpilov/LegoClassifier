@@ -23,6 +23,7 @@ App::App()
     board_init();
     processor = createMCU();
     logger = std::make_shared<Logger>();
+    usb = std::make_shared<usb::USB>();
 
     LCD_Test();
 }
@@ -30,7 +31,9 @@ App::App()
 void App::app_loop() const
 {
     toggle_board_led();
+    logger->log_info("Before camera frame\n");
+    usb::USB::test();
     display_camera_frame(processor);
-    // logger->log_info("Test log message\n");
+    logger->log_info("After camera frame\n");
     MCU::kick_dog();
 }
