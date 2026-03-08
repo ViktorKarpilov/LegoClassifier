@@ -10,7 +10,7 @@ public:
     Logger();
     ~Logger();
 
-    void log_info(std::string_view message);
+    static void log_info(std::string_view message);
 private:
     class LoggerImpl;
     std::unique_ptr<LoggerImpl> logger;

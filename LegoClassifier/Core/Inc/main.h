@@ -61,6 +61,7 @@ void Error_Handler(void);
 #define BLUE_LED_GPIO_Port GPIOE
 #define K1_BUTTON_Pin GPIO_PIN_13
 #define K1_BUTTON_GPIO_Port GPIOC
+#define K1_BUTTON_EXTI_IRQn EXTI15_10_IRQn
 #define GREEN_LED_Pin GPIO_PIN_1
 #define GREEN_LED_GPIO_Port GPIOA
 #define LCD_CS_Pin GPIO_PIN_11
@@ -69,6 +70,7 @@ void Error_Handler(void);
 #define LCD_WR_RS_GPIO_Port GPIOE
 #define PIC_BUTTON_Pin GPIO_PIN_11
 #define PIC_BUTTON_GPIO_Port GPIOB
+#define PIC_BUTTON_EXTI_IRQn EXTI15_10_IRQn
 #define INFO_LED_Pin GPIO_PIN_13
 #define INFO_LED_GPIO_Port GPIOB
 #define WARN_LED_Pin GPIO_PIN_15

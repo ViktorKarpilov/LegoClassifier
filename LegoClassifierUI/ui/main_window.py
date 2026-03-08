@@ -9,9 +9,12 @@ import os
 
 from .image_panel import ImagePanel
 from .results_panel import ResultsPanel
+import config
 
-os.add_dll_directory(r"C:\Users\PC\Work\opencv\opencv\cmake-build-release-windows\bin")
-os.add_dll_directory(r"C:\msys64\ucrt64\bin")
+if config.OPENCV_DLL_PATH:
+    os.add_dll_directory(config.OPENCV_DLL_PATH)
+if config.MSYS64_DLL_PATH:
+    os.add_dll_directory(config.MSYS64_DLL_PATH)
 
 try:
     import lego_classifier
