@@ -15,6 +15,8 @@ if config.OPENCV_DLL_PATH:
     os.add_dll_directory(config.OPENCV_DLL_PATH)
 if config.MSYS64_DLL_PATH:
     os.add_dll_directory(config.MSYS64_DLL_PATH)
+if config.BINDINGS_PATH and config.BINDINGS_PATH not in sys.path:
+    sys.path.insert(0, config.BINDINGS_PATH)
 
 try:
     import lego_classifier
