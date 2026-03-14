@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+#include "app_entry.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "main.h"
@@ -51,6 +52,7 @@ osThreadId defaultTaskHandle;
 uint32_t defaultTaskBuffer[ 6144 ];
 osStaticThreadDef_t defaultTaskControlBlock;
 osMutexId usb_mutexHandle;
+osMutexId core_dump_mutexHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -85,12 +87,15 @@ void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackTy
   */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
-
   /* USER CODE END Init */
   /* Create the mutex(es) */
   /* definition and creation of usb_mutex */
   osMutexDef(usb_mutex);
   usb_mutexHandle = osMutexCreate(osMutex(usb_mutex));
+
+  /* definition and creation of core_dump_mutex */
+  osMutexDef(core_dump_mutex);
+  core_dump_mutexHandle = osMutexCreate(osMutex(core_dump_mutex));
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */

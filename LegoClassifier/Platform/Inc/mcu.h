@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <camera.h>
+#include <string>
 
 // extern uint16_t pic[120][160];
 extern std::array<std::array<uint16_t, FrameWidth>, FrameHeight> cameraFrame; // NOLINT(*-dynamic-static-initializers)
@@ -21,6 +22,9 @@ public:
     MCU()=default;
     static void delay(uint32_t delay);
     static void kick_dog();
+
+    /// message[0] will be set to non-empty determinator
+    static void save_error(std::string &message);
 
     virtual ImageFrame take_image_frame(int16_t offset) = 0;
 private:

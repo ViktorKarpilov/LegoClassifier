@@ -56,11 +56,12 @@ ENTRY(Reset_Handler)
 MEMORY
 {
 DTCMRAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
-RAM_D1 (xrw)      : ORIGIN = 0x24000000, LENGTH = 320K
-RAM_D2 (xrw)      : ORIGIN = 0x30000000, LENGTH = 32K
-RAM_D3 (xrw)      : ORIGIN = 0x38000000, LENGTH = 16K
+RAM_D1 (xrw)       : ORIGIN = 0x24000000, LENGTH = 320K
+RAM_D2 (xrw)       : ORIGIN = 0x30000000, LENGTH = 32K
+RAM_D3 (xrw)       : ORIGIN = 0x38000000, LENGTH = 16K
 ITCMRAM (xrw)      : ORIGIN = 0x00000000, LENGTH = 64K
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 1024K
+FLASH (rx)         : ORIGIN = 0x8000000, LENGTH = 896K
+CORE_DUMP (r)      : ORIGIN = 0x80E0000, LENGTH = 128K
 }
 
 /* Highest address of the user mode stack */
@@ -79,6 +80,14 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
   } >FLASH
+
+  .core_dump(NOLOAD):
+  {
+    . = ALIGN(4);
+    *(.CORE_DUMP)
+    *(.CORE_DUMP*)
+    . = ALIGN(4);
+  } > CORE_DUMP
 
   /* The program code and other data goes into FLASH */
   .text :

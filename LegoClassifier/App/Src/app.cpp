@@ -25,6 +25,7 @@ void app_loop()
 App::App()
 {
     board_init();
+    Logger::log_info("Create MCU");
     processor = createMCU();
 
     LCD_Test();
@@ -94,7 +95,6 @@ void App::app_loop() const
     // {
     //     MCU::delay(50);
     // }
-    Logger::log_info("After camera frame\n");
     MCU::kick_dog();
     MCU::delay(100);
 }
