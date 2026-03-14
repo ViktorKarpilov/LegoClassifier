@@ -8,13 +8,11 @@
 #include "iwdg.h"
 #include "state.h"
 
-// __attribute__((section(".RAM_D1"))) uint16_t pic[120][160];
-
 __attribute__((section(".RAM_D1"))) std::array<std::array<uint16_t, FrameWidth>, FrameHeight> cameraFrame{};
 
 STM32H723VGT6::STM32H723VGT6()
 {
-    start_dcmi();
+    // start_stream_dcmi();
 }
 
 std::unique_ptr<MCU> createMCU()
@@ -22,11 +20,22 @@ std::unique_ptr<MCU> createMCU()
     return std::make_unique<STM32H723VGT6>();
 }
 
-void STM32H723VGT6::start_dcmi()
+void STM32H723VGT6::start_stream_dcmi()
 {
     auto first_frame_pixel_addr = reinterpret_cast<uint32_t>(&(cameraFrame)[0][0]);
     HAL_DCMI_Start_DMA(&hdcmi,
              DCMI_MODE_CONTINUOUS,
+                 first_frame_pixel_addr,
+                 FrameWidth * FrameHeight * 2 / 4);
+}
+
+void STM32H723VGT6::fill_image_dcmi()
+{
+    HAL_DCMI_Stop(&hdcmi);
+
+    const auto first_frame_pixel_addr = reinterpret_cast<uint32_t>(&(cameraFrame)[0][0]);
+    HAL_DCMI_Start_DMA(&hdcmi,
+             DCMI_MODE_SNAPSHOT,
                  first_frame_pixel_addr,
                  FrameWidth * FrameHeight * 2 / 4);
 }
@@ -55,16 +64,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_pin)
 }
 
 
-ImageFrame STM32H723VGT6::create_image_frame(int16_t offset)
+ImageFrame STM32H723VGT6::take_image_frame(const int16_t offset)
 {
-    if (DCMI_FrameIsReady == 0)
-    {
-        for (int i=0;i<4;i++)
-        {
-            toggle_ERR_led();
-            MCU::delay(200);
-        }
-    }
+    DCMI_FrameIsReady = 0;
+    fill_image_dcmi();
+
+    const uint32_t start = HAL_GetTick();
+    while (DCMI_FrameIsReady == 0)
+        if ((HAL_GetTick() - start) / HAL_GetTickFreq() > dcmi_timeout) toggle_ERR_led();
 
     return {
         .frame_pointer = &cameraFrame[offset][0],

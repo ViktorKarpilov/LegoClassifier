@@ -9,15 +9,17 @@
 #define HANDLE_I2C_1 hi2c1
 
 typedef std::array<std::array<uint16_t, FrameWidth>, FrameHeight> CameraFrameT;
+constexpr uint32_t dcmi_timeout = 500;
 
 class STM32H723VGT6 : public MCU
 {
 public:
     STM32H723VGT6();
 
-    ImageFrame create_image_frame(int16_t offset) final;
+    ImageFrame take_image_frame(int16_t offset) final;
 private:
-    void start_dcmi();
+    void start_stream_dcmi();
+    static void fill_image_dcmi();
 };
 
 

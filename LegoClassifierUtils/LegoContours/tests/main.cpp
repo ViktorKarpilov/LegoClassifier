@@ -5,7 +5,7 @@
 
 TEST_CASE("Overlay image shows contours and studs", "[visual]")
 {
-    const auto contour = contours::lego_contour("./static/two_by_four_with_holes.jpg");
+    const auto contour = contours::lego_contour("./static/received.png");
     REQUIRE(contour.has_value());
 
     const auto overlay = contour.build_overlay_image();
@@ -19,7 +19,7 @@ TEST_CASE("Overlay image shows contours and studs", "[visual]")
 
 TEST_CASE("Lego features should be correct", "[features]")
 {
-    const auto features = features::extract_features("./static/two_by_four_with_holes.jpg");
+    const auto features = features::extract_features("./static/two_by_four_with_holes.png");
 
     REQUIRE(features.circles == 8);
 

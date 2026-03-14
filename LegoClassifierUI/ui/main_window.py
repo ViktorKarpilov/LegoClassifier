@@ -7,14 +7,23 @@ from typing import Optional
 import sys
 import os
 
+import tempfile
+import threading
+import numpy as np
+
 from .image_panel import ImagePanel
 from .results_panel import ResultsPanel
 import config
+from connection.usb_connection import UsbConnection
+from connection.packet_type import PacketType
+from connection.image_utils import rgb565_to_image
 
 if config.OPENCV_DLL_PATH:
     os.add_dll_directory(config.OPENCV_DLL_PATH)
 if config.MSYS64_DLL_PATH:
     os.add_dll_directory(config.MSYS64_DLL_PATH)
+if config.BINDINGS_PATH and config.BINDINGS_PATH not in sys.path:
+    sys.path.insert(0, config.BINDINGS_PATH)
 
 try:
     import lego_classifier
@@ -33,6 +42,7 @@ class MainWindow(ttk.Frame):
         self._current_image_path: Optional[Path] = None
         self._current_contour: Optional[object] = None
         self._current_features: Optional[object] = None
+        self._usb_connection: Optional[UsbConnection] = None
 
         self._setup_menu(parent)
         self._setup_ui()
@@ -92,6 +102,13 @@ class MainWindow(ttk.Frame):
         ttk.Button(controls_frame, text="Open Image", command=self._open_image).pack(fill=tk.X, pady=2)
         ttk.Button(controls_frame, text="Extract Features", command=self._extract_features).pack(fill=tk.X, pady=2)
         ttk.Button(controls_frame, text="Save to Database", command=self._save_to_database).pack(fill=tk.X, pady=2)
+        ttk.Button(controls_frame, text="Request Image from device", command=self._request_image_from_device).pack(fill=tk.X, pady=2)
+
+        exposure_frame = ttk.Frame(controls_frame)
+        exposure_frame.pack(fill=tk.X, pady=2)
+        self._exposure_var = tk.StringVar(value="0")
+        ttk.Entry(exposure_frame, textvariable=self._exposure_var, width=10).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
+        ttk.Button(exposure_frame, text="Set Exposure", command=self._set_exposure).pack(side=tk.LEFT)
 
         view_frame = ttk.LabelFrame(right_panel, text="View Mode", padding=10)
         view_frame.pack(fill=tk.X, pady=(0, 10))
@@ -223,6 +240,69 @@ class MainWindow(ttk.Frame):
             messagebox.showinfo("Success", "Features saved to database.")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save to database:\n{e}")
+
+    def _request_image_from_device(self):
+        """Send an image request to the connected device and wait for the response."""
+        try:
+            if self._usb_connection is None:
+                self._usb_connection = UsbConnection()
+            self._usb_connection.send_image_request()
+        except Exception as e:
+            self._usb_connection = None
+            messagebox.showerror("Error", f"Failed to request image:\n{e}")
+            return
+
+        threading.Thread(target=self._receive_image, daemon=True).start()
+
+    def _set_exposure(self):
+        """Send an exposure value to the connected device."""
+        try:
+            value = int(self._exposure_var.get())
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Exposure must be an integer.")
+            return
+
+        try:
+            if self._usb_connection is None:
+                self._usb_connection = UsbConnection()
+            self._usb_connection.send_set_exposure(value)
+        except Exception as e:
+            self._usb_connection = None
+            messagebox.showerror("Error", f"Failed to set exposure:\n{e}")
+
+    def _receive_image(self):
+        """Receive an image packet and display it (runs in background thread)."""
+        try:
+            packet = self._usb_connection.read_packet()
+            if packet.type is not PacketType.Image or len(packet.byte_data) < 160 * 120 * 2:
+                return
+
+            image = rgb565_to_image(packet.byte_data, 160, 120)
+
+            tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
+            image.save(tmp.name)
+            tmp.close()
+
+            image.save("received.png")
+
+            path = Path(tmp.name)
+            array = np.array(image)
+            self.after(0, lambda: self._on_device_image_received(path, array))
+        except Exception as e:
+            self.after(0, lambda: messagebox.showerror("Error", f"Failed to receive image:\n{e}"))
+
+    def _on_device_image_received(self, path: Path, array: np.ndarray):
+        self._current_image_path = path
+        self._current_contour = None
+        self._current_features = None
+        self._results_panel.clear()
+        self._image_panel.load_from_array(array)
+
+        if BINDINGS_AVAILABLE:
+            try:
+                self._current_contour = lego_classifier.contours.lego_contour(str(path))
+            except Exception as e:
+                print(f"Error creating contour: {e}")
 
     def _show_history(self):
         """Show database history in a dialog."""

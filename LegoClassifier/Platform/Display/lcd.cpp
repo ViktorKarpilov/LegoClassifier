@@ -331,7 +331,7 @@ void display_camera_frame(const std::weak_ptr<MCU>& mcu_reference)
 	}
 
 #if TFT96
-	auto st7735_frame = mcu->create_image_frame(20);
+	auto st7735_frame = mcu->take_image_frame(20);
 #else
 	for (int i = 0; i < 20; i++)
 	{

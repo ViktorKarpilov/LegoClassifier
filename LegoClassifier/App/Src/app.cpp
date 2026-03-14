@@ -8,8 +8,8 @@
 #include <memory>
 #include <string>
 #include <state.h>
-
-#include "state.h"
+#include "USB.h"
+#include <cstring>
 
 void app_initiation()
 {
@@ -26,43 +26,74 @@ App::App()
 {
     board_init();
     processor = createMCU();
-    // logger = std::make_shared<Logger>();
-    // usb = std::make_shared<usb::USB>();
 
     LCD_Test();
 }
 
 void App::app_loop() const
 {
-    if (actions action = idle; platform_queue.pop(action))
+    int32_t exposure = 0;
+
+    // TODO: Async handle of requests
+    if (const auto packet = usb::USB::try_receive_packet(); packet.valid)
     {
-        // ReSharper disable once CppDFAConstantConditions - condition set in isr
-        if (action == send_image)
+        switch (packet.type)
         {
-            // ReSharper disable once CppDFAUnreachableCode
-            display_camera_frame(processor);
-            usb::USB::send_image(processor->create_image_frame(0));
+            case ImageRequest:
+                platform_queue.push(send_image);
+                break;
+        case SetExposure:
+                if (packet.payload.size() != sizeof(exposure))
+                {
+                    toggle_ERR_led();
+                    break;
+                }
+
+                std::memcpy(&exposure, packet.payload.data(), sizeof(exposure));
+                platform_queue.push(set_exposure_action);
+                break;
+
+            default:
+                break;
+        }
+        toggle_INFO_led();
+    }
+
+    if (action action = idle; platform_queue.pop(action))
+    {
+        // TODO: Since now I have freertos (thanks to missing normal mutex ...) - make sense make it a queue
+        // ReSharper disable once CppDFAConstantConditions - condition set in isr
+
+        switch (action)
+        {
+            case send_image:
+                // ReSharper disable once CppDFAUnreachableCode
+                display_camera_frame(processor);
+                usb::USB::send_image(processor->take_image_frame(0));
+                break;
+            case set_exposure_action:
+                set_exposure(exposure);
+                display_camera_frame(processor);
+                break;
+
+            default:
+                break;
         }
     }
     toggle_board_led();
 
-    usb::USB::test();
-    MCU::delay(20);
-
-    uint8_t result = 0;
-    uint8_t max_retry_count = 3;
-    // TODO Expose usb statuses with header
-    while (result = usb::USB::try_transmit_message("First message try\n"), result == 1 && max_retry_count-- > 0)
-    {
-        MCU::delay(50);
-    }
-
-    uint8_t result_t = 0;
-    while (result_t = usb::USB::try_transmit_message("Result was: " + std::to_string(result) + "\n"), result_t == 1 &&
-        max_retry_count-- > 0)
-    {
-        MCU::delay(50);
-    }
+    // usb::USB::test();
+    // MCU::delay(20);
+    //
+    // // TODO Expose usb statuses with header
+    // usb::USB::transmit_info_message("First message try\n");
+    //
+    // uint8_t result_t = 0;
+    // while (result_t = usb::USB::transmit_info_message("Result was: " + std::to_string(result) + "\n"), result_t == 1 &&
+    //     max_retry_count-- > 0)
+    // {
+    //     MCU::delay(50);
+    // }
     Logger::log_info("After camera frame\n");
     MCU::kick_dog();
     MCU::delay(100);

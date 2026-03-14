@@ -157,3 +157,8 @@ void camera_init()
 
 	ov2640_init();
 }
+
+void set_exposure(const int exposure)
+{
+	_set_exposure(exposure);
+}

@@ -1,27 +1,33 @@
 #!/usr/bin/env python3
 """LEGO Classifier UI - Entry point."""
-
 import sys
 import tkinter as tk
 
+from connection.packet_type import PacketType
 from connection.usb_connection import UsbConnection
+from connection.image_utils import rgb565_to_image
 from ui.main_window import MainWindow
 
-
 def main():
-    usb = UsbConnection()
-    while 1:
-        usb.read()
+    # usb = UsbConnection()
+    #
+    # while 1:
+    #     test = usb.read_packet()
+    #     if test.type is PacketType.Image and len(test.byte_data) >= 160*120*2:
+    #         image = rgb565_to_image(test.byte_data, 160, 120)
+    #         image.save("output_picture.png")
+    #         image.show("TestTitle")
 
-    # root = tk.Tk()
-    # root.title("LEGO Classifier")
-    # root.geometry("1200x800")
-    # root.minsize(800, 600)
-    #
-    # app = MainWindow(root)
-    # app.pack(fill=tk.BOTH, expand=True)
-    #
-    # root.mainloop()
+
+    root = tk.Tk()
+    root.title("LEGO Classifier")
+    root.geometry("1200x800")
+    root.minsize(800, 600)
+
+    app = MainWindow(root)
+    app.pack(fill=tk.BOTH, expand=True)
+
+    root.mainloop()
 
 
 if __name__ == "__main__":
