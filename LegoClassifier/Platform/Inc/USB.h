@@ -1,5 +1,6 @@
 #pragma once
 #include "mcu.h"
+#include "transmission_types.h"
 #include <string_view>
 
 // Amount of idle time in case of retry for send
@@ -25,6 +26,8 @@ namespace usb
         static bool send_image(const ImageFrame& frame);
 
         static uint8_t transmit_info_message(std::string_view message);
+
+        static transmission_packet try_receive_packet();
 
     private:
         struct Impl;

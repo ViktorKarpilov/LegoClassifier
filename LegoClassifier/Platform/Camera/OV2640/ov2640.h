@@ -7,4 +7,6 @@
 
 int ov2640_init();
 
+int _set_exposure(int exposure);
+
 #endif

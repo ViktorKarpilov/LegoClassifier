@@ -8,8 +8,8 @@
 #include <memory>
 #include <string>
 #include <state.h>
-
-#include "state.h"
+#include "USB.h"
+#include <cstring>
 
 void app_initiation()
 {
@@ -26,23 +26,58 @@ App::App()
 {
     board_init();
     processor = createMCU();
-    // logger = std::make_shared<Logger>();
-    // usb = std::make_shared<usb::USB>();
 
     LCD_Test();
 }
 
 void App::app_loop() const
 {
+    int32_t exposure = 0;
+
+    // TODO: Async handle of requests
+    if (const auto packet = usb::USB::try_receive_packet(); packet.valid)
+    {
+        switch (packet.type)
+        {
+            case ImageRequest:
+                platform_queue.push(send_image);
+                break;
+        case SetExposure:
+                if (packet.payload.size() != sizeof(exposure))
+                {
+                    toggle_ERR_led();
+                    break;
+                }
+
+                std::memcpy(&exposure, packet.payload.data(), sizeof(exposure));
+                platform_queue.push(set_exposure_action);
+                break;
+
+            default:
+                break;
+        }
+        toggle_INFO_led();
+    }
+
     if (action action = idle; platform_queue.pop(action))
     {
         // TODO: Since now I have freertos (thanks to missing normal mutex ...) - make sense make it a queue
         // ReSharper disable once CppDFAConstantConditions - condition set in isr
-        if (action == send_image)
+
+        switch (action)
         {
-            // ReSharper disable once CppDFAUnreachableCode
-            display_camera_frame(processor);
-            usb::USB::send_image(processor->take_image_frame(0));
+            case send_image:
+                // ReSharper disable once CppDFAUnreachableCode
+                display_camera_frame(processor);
+                usb::USB::send_image(processor->take_image_frame(0));
+                break;
+            case set_exposure_action:
+                set_exposure(exposure);
+                display_camera_frame(processor);
+                break;
+
+            default:
+                break;
         }
     }
     toggle_board_led();

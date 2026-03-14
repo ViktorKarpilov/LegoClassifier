@@ -11,3 +11,7 @@ class PacketType(int, Enum):
     Image = 3,
 
     Ping = 4,
+
+    ImageRequest = 5,
+
+    SetExposure = 6,

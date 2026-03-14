@@ -4,6 +4,7 @@ enum action
 {
     idle,
     send_image,
+    set_exposure_action,
 };
 
 struct actions_queue

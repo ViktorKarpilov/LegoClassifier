@@ -8,8 +8,6 @@
 #include "iwdg.h"
 #include "state.h"
 
-// __attribute__((section(".RAM_D1"))) uint16_t pic[120][160];
-
 __attribute__((section(".RAM_D1"))) std::array<std::array<uint16_t, FrameWidth>, FrameHeight> cameraFrame{};
 
 STM32H723VGT6::STM32H723VGT6()

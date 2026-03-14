@@ -74,3 +74,29 @@ class UsbConnection:
 
         return UsbPacket(packet_type, result_data)
 
+    def send_set_exposure(self, value: int):
+        payload = value.to_bytes(4, byteorder='little', signed=True)
+        crc = self.crc(payload)
+        packet = (
+            b'\xc3'
+            + len(payload).to_bytes(2, byteorder='little')
+            + int(PacketType.SetExposure).to_bytes(1, byteorder='little')
+            + b'\x00'
+            + payload
+            + crc.to_bytes(2, byteorder='little')
+        )
+        self.serial.write(packet)
+
+    def send_image_request(self):
+        self.serial.reset_input_buffer()
+        payload = b''
+        crc = self.crc(payload)
+        packet = (
+            b'\xc3'
+            + len(payload).to_bytes(2, byteorder='little')
+            + int(PacketType.ImageRequest).to_bytes(1, byteorder='little')
+            + b'\x00'
+            + crc.to_bytes(2, byteorder='little')
+        )
+        self.serial.write(packet)
+

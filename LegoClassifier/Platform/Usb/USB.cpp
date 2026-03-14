@@ -4,7 +4,7 @@
 
 #include "board.h"
 #include "cmsis_os.h"
-#include "transmission_types.h"
+#include "../Inc/transmission_types.h"
 #include "usbd_cdc.h"
 #include "usbd_cdc_if.h"
 #include "usbd_desc.h"
@@ -12,6 +12,7 @@
 using namespace usb;
 
 extern USBD_HandleTypeDef hUsbDeviceHS;
+extern "C" { extern osMutexId usb_mutexHandle; }
 
 // Function to calculate CRC16
 uint16_t calculate_crc16(const uint8_t* data, const size_t length) {
@@ -121,5 +122,42 @@ bool USB::send_image(const ImageFrame& frame)
     return transmit(Image, frame.height * frame.width * sizeof(*frame.frame_pointer),
              reinterpret_cast<uint8_t*>(frame.frame_pointer)) == USBD_OK;
 }
+
+transmission_packet USB::try_receive_packet()
+{
+    transmission_packet packet{};
+
+    auto* hcdc = static_cast<USBD_CDC_HandleTypeDef*>(hUsbDeviceHS.pClassData);
+    if (hcdc == nullptr) return packet;
+
+    const uint32_t rx_len = hcdc->RxLength;
+    const uint8_t* buf = hcdc->RxBuffer;
+
+    constexpr uint32_t header_size = 5;
+    constexpr uint32_t crc_size    = 2;
+
+    if (rx_len < header_size + crc_size) return packet;
+    if (buf[0] != 0xC3) return packet;
+
+    const uint16_t payload_len = static_cast<uint16_t>(buf[1]) |
+                                 (static_cast<uint16_t>(buf[2]) << 8);
+
+    if (rx_len < header_size + payload_len + crc_size) return packet;
+
+    const uint16_t received_crc = static_cast<uint16_t>(buf[header_size + payload_len]) |
+                                  (static_cast<uint16_t>(buf[header_size + payload_len + 1]) << 8);
+    if (received_crc != calculate_crc16(buf + header_size, payload_len)) return packet;
+
+    packet.valid      = true;
+    packet.type       = static_cast<transmission_type>(buf[3]);
+    packet.chunks_rem = buf[4];
+    packet.payload.assign(buf + header_size, buf + header_size + payload_len);
+
+    hcdc->RxLength = 0;
+
+    return packet;
+}
+
+
 
 

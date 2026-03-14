@@ -1,5 +1,6 @@
 #include "ov2640.h"
 
+#include "camera.h"
 #include "camera_def.h"
 #include "ov2640_regs.h"
 #include "stm32h7xx_hal.h"
@@ -162,7 +163,7 @@ static int set_special_effect(uint8_t sde)
 }
 
 //-----------------------------------
-static int set_exposure(int exposure)
+int _set_exposure(int exposure)
 {
     int ret = 0;
     // Disable DSP
@@ -499,7 +500,11 @@ static int set_night_mode(int enable)
 int ov2640_init()
 {
 	reset();
-	hcamera.framesize = FRAMESIZE_QQVGA;
+
+    static_assert(FrameWidth == 320);
+    static_assert(FrameHeight == 240);
+	hcamera.framesize = FRAMESIZE_QVGA;
+
 	hcamera.pixformat = PIXFORMAT_RGB565;
 	//set_framesize(FRAMESIZE_QQVGA);
 	set_pixformat(hcamera.pixformat);
