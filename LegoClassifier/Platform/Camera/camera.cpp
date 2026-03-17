@@ -7,6 +7,9 @@
 
 Camera_HandleTypeDef hcamera;
 
+
+//TODO: Use resolution table instead of FrameWidth, FrameHeight
+
 // Resolution table
 //----------------------------------------
 const uint16_t dvp_cam_resolution[][2] = {
