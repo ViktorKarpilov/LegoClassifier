@@ -110,6 +110,24 @@ class MainWindow(ttk.Frame):
         ttk.Entry(exposure_frame, textvariable=self._exposure_var, width=10).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
         ttk.Button(exposure_frame, text="Set Exposure", command=self._set_exposure).pack(side=tk.LEFT)
 
+        brightness_frame = ttk.Frame(controls_frame)
+        brightness_frame.pack(fill=tk.X, pady=2)
+        self._brightness_var = tk.StringVar(value="0")
+        ttk.Entry(brightness_frame, textvariable=self._brightness_var, width=10).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
+        ttk.Button(brightness_frame, text="Set Brightness", command=self._set_brightness).pack(side=tk.LEFT)
+
+        contrast_frame = ttk.Frame(controls_frame)
+        contrast_frame.pack(fill=tk.X, pady=2)
+        self._contrast_var = tk.StringVar(value="0")
+        ttk.Entry(contrast_frame, textvariable=self._contrast_var, width=10).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
+        ttk.Button(contrast_frame, text="Set Contrast", command=self._set_contrast).pack(side=tk.LEFT)
+
+        saturation_frame = ttk.Frame(controls_frame)
+        saturation_frame.pack(fill=tk.X, pady=2)
+        self._saturation_var = tk.StringVar(value="0")
+        ttk.Entry(saturation_frame, textvariable=self._saturation_var, width=10).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
+        ttk.Button(saturation_frame, text="Set Saturation", command=self._set_saturation).pack(side=tk.LEFT)
+
         view_frame = ttk.LabelFrame(right_panel, text="View Mode", padding=10)
         view_frame.pack(fill=tk.X, pady=(0, 10))
 
@@ -254,21 +272,32 @@ class MainWindow(ttk.Frame):
 
         threading.Thread(target=self._receive_image, daemon=True).start()
 
-    def _set_exposure(self):
-        """Send an exposure value to the connected device."""
+    def _send_int_camera_param(self, var: tk.StringVar, send_fn, param_name: str):
+        """Send an integer camera parameter to the connected device."""
         try:
-            value = int(self._exposure_var.get())
+            value = int(var.get())
         except ValueError:
-            messagebox.showerror("Invalid Input", "Exposure must be an integer.")
+            messagebox.showerror("Invalid Input", f"{param_name} must be an integer.")
             return
-
         try:
             if self._usb_connection is None:
                 self._usb_connection = UsbConnection()
-            self._usb_connection.send_set_exposure(value)
+            send_fn(value)
         except Exception as e:
             self._usb_connection = None
-            messagebox.showerror("Error", f"Failed to set exposure:\n{e}")
+            messagebox.showerror("Error", f"Failed to set {param_name}:\n{e}")
+
+    def _set_exposure(self):
+        self._send_int_camera_param(self._exposure_var, lambda v: self._usb_connection.send_set_exposure(v), "Exposure")
+
+    def _set_brightness(self):
+        self._send_int_camera_param(self._brightness_var, lambda v: self._usb_connection.send_set_brightness(v), "Brightness")
+
+    def _set_contrast(self):
+        self._send_int_camera_param(self._contrast_var, lambda v: self._usb_connection.send_set_contrast(v), "Contrast")
+
+    def _set_saturation(self):
+        self._send_int_camera_param(self._saturation_var, lambda v: self._usb_connection.send_set_saturation(v), "Saturation")
 
     def _receive_image(self):
         """Receive an image packet and display it (runs in background thread)."""
@@ -277,7 +306,7 @@ class MainWindow(ttk.Frame):
             if packet.type is not PacketType.Image or len(packet.byte_data) < 160 * 120 * 2:
                 return
 
-            image = rgb565_to_image(packet.byte_data, 160, 120)
+            image = rgb565_to_image(packet.byte_data, 320, 240)
 
             tmp = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
             image.save(tmp.name)

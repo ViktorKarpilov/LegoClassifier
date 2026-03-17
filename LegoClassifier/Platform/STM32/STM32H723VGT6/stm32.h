@@ -11,6 +11,9 @@
 typedef std::array<std::array<uint16_t, FrameWidth>, FrameHeight> CameraFrameT;
 constexpr uint32_t dcmi_timeout = 500;
 
+constexpr uint32_t core_dump_size_bytes = 1024 * 128;
+__attribute__((section(".CORE_DUMP"))) inline std::array<uint8_t, core_dump_size_bytes> core_dump{};
+
 class STM32H723VGT6 : public MCU
 {
 public:

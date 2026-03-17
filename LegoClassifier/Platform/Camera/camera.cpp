@@ -162,3 +162,18 @@ void set_exposure(const int exposure)
 {
 	_set_exposure(exposure);
 }
+
+void set_brightness(const int level)
+{
+	_set_brightness(level);
+}
+
+void set_contrast(const int level)
+{
+	_set_contrast(level);
+}
+
+void set_saturation(const int level)
+{
+	_set_saturation(level);
+}
