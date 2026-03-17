@@ -15,3 +15,7 @@ class PacketType(int, Enum):
     ImageRequest = 5,
 
     SetExposure = 6,
+
+    SetBrightness = 7,
+    SetContrast = 8,
+    SetSaturation = 9,

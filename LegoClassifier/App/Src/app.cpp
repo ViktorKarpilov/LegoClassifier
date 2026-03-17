@@ -34,6 +34,9 @@ App::App()
 void App::app_loop() const
 {
     int32_t exposure = 0;
+    int32_t brightness = 0;
+    int32_t contrast = 0;
+    int32_t saturation = 0;
 
     // TODO: Async handle of requests
     if (const auto packet = usb::USB::try_receive_packet(); packet.valid)
@@ -43,15 +46,41 @@ void App::app_loop() const
             case ImageRequest:
                 platform_queue.push(send_image);
                 break;
-        case SetExposure:
+            case SetExposure:
                 if (packet.payload.size() != sizeof(exposure))
                 {
                     toggle_ERR_led();
                     break;
                 }
-
                 std::memcpy(&exposure, packet.payload.data(), sizeof(exposure));
                 platform_queue.push(set_exposure_action);
+                break;
+            case SetBrightness:
+                if (packet.payload.size() != sizeof(brightness))
+                {
+                    toggle_ERR_led();
+                    break;
+                }
+                std::memcpy(&brightness, packet.payload.data(), sizeof(brightness));
+                platform_queue.push(set_brightness_action);
+                break;
+            case SetContrast:
+                if (packet.payload.size() != sizeof(contrast))
+                {
+                    toggle_ERR_led();
+                    break;
+                }
+                std::memcpy(&contrast, packet.payload.data(), sizeof(contrast));
+                platform_queue.push(set_contrast_action);
+                break;
+            case SetSaturation:
+                if (packet.payload.size() != sizeof(saturation))
+                {
+                    toggle_ERR_led();
+                    break;
+                }
+                std::memcpy(&saturation, packet.payload.data(), sizeof(saturation));
+                platform_queue.push(set_saturation_action);
                 break;
 
             default:
@@ -69,12 +98,19 @@ void App::app_loop() const
         {
             case send_image:
                 // ReSharper disable once CppDFAUnreachableCode
-                display_camera_frame(processor);
                 usb::USB::send_image(processor->take_image_frame(0));
                 break;
             case set_exposure_action:
                 set_exposure(exposure);
-                display_camera_frame(processor);
+                break;
+            case set_brightness_action:
+                set_brightness(brightness);
+                break;
+            case set_contrast_action:
+                set_contrast(contrast);
+                break;
+            case set_saturation_action:
+                set_saturation(saturation);
                 break;
 
             default:

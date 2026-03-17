@@ -16,6 +16,9 @@ enum transmission_type : uint8_t
 
     // int data
     SetExposure=6,
+    SetBrightness=7,
+    SetContrast=8,
+    SetSaturation=9,
 };
 
 struct transmission_packet

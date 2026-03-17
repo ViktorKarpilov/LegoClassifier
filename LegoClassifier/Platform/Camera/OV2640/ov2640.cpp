@@ -319,7 +319,7 @@ int ov2640_check_framesize(uint8_t framesize)
 }
 
 //--------------------------------
-static int set_contrast(int level)
+int _set_contrast(int level)
 {
     level += (NUM_CONTRAST_LEVELS / 2) + 1;
     if (level < 0 || level > NUM_CONTRAST_LEVELS) {
@@ -338,7 +338,7 @@ static int set_contrast(int level)
 }
 
 //----------------------------------
-static int set_brightness(int level)
+int _set_brightness(int level)
 {
     level += (NUM_BRIGHTNESS_LEVELS / 2) + 1;
     if ((level < 0) || (level > NUM_BRIGHTNESS_LEVELS)) return -1;
@@ -355,7 +355,7 @@ static int set_brightness(int level)
 }
 
 //----------------------------------
-static int set_saturation(int level)
+int _set_saturation(int level)
 {
     level += (NUM_SATURATION_LEVELS / 2) + 1;
     if ((level < 0) || (level > NUM_SATURATION_LEVELS)) return -1;

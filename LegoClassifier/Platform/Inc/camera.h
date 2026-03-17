@@ -6,5 +6,8 @@
 
 void camera_init();
 void set_exposure(int exposure);
+void set_brightness(int level);
+void set_contrast(int level);
+void set_saturation(int level);
 
 #endif //LEGOCLASSIFIER_CAMERA_H

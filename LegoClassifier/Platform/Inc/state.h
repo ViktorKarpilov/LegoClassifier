@@ -5,6 +5,9 @@ enum action
     idle,
     send_image,
     set_exposure_action,
+    set_brightness_action,
+    set_contrast_action,
+    set_saturation_action,
 };
 
 struct actions_queue
